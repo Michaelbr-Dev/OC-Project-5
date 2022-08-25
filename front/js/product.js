@@ -50,7 +50,7 @@ fetch(productUrl)
     button.addEventListener('click', function() {
       const productValues = {
         color: document.getElementById('colors').value,
-        quantity: document.getElementById('quantity').value,
+        quantity: parseInt(document.getElementById('quantity').value),
         id: productId,
       };
       console.log(productValues);
@@ -72,11 +72,11 @@ fetch(productUrl)
 
       // Check if quantity is between 1 ans 100
       else if (productValues.quantity > 100) {
-        alert('Vous ne pouvez pas commander plus de 100 articles');
+        alert('Vous ne pouvez pas commander plus de 100 articles.');
       }
 
       else if (productValues.quantity < 1 ) {
-        alert('Veuillez séléctionner un nombre d\'articles entre 1 et 100');
+        alert('Veuillez séléctionner un nombre d\'articles entre 1 et 100.');
       } 
       
       else {
@@ -89,14 +89,14 @@ fetch(productUrl)
           if (getProducts) {
             const setNewQuantity = parseInt(getProducts.quantity) + parseInt(productValues.quantity);
             if (setNewQuantity > 100) {
-              alert('Vous ne pouvez dépasser la quantité de 100 Produits')
+              alert('Vous ne pouvez dépasser la quantité de 100 Produits.')
             }
             else {
               getProducts.quantity = setNewQuantity;
               
               // Send datas in localStorage
               localStorage.setItem('kanap_cart', JSON.stringify(cart));
-              alert('Votre panier a bien été mis à jour');
+              alert('Votre panier a bien été mis à jour.');
               console.log(localStorage);
             }
           }
@@ -105,7 +105,7 @@ fetch(productUrl)
           // We add the new products in localStorage
           cart.push(productValues);
           localStorage.setItem('kanap_cart', JSON.stringify(cart));
-          alert('Votre article a bien été ajouté au panier');
+          alert('Votre article a bien été ajouté au panier.');
           console.log(localStorage);
         }
         }
@@ -114,7 +114,7 @@ fetch(productUrl)
           // We add the new products in localStorage
           cart.push(productValues);
           localStorage.setItem('kanap_cart', JSON.stringify(cart));
-          alert('Votre article a bien été ajouté au panier');
+          alert('Votre article a bien été ajouté au panier.');
           console.log(localStorage);
         }
       }
