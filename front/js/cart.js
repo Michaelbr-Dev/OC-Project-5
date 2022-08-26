@@ -1,15 +1,12 @@
 // Get the cart in localStorage 
 const cart = JSON.parse(localStorage.getItem("kanap_cart"));
-console.log(cart);
-
 
 // display 'Votre panier est vide' when cart is empty
 if (cart.length === 0) {
   document.querySelector('h1').innerText = 'Votre panier est vide.';
 }
 
-//const apiProduct = [];
-
+const apiProducts = [];
 
 // Function Delete product in cart
 function productDelete(event) {
@@ -39,8 +36,8 @@ function productDelete(event) {
   if (cart.length === 0) {
   document.querySelector('h1').innerText = 'Votre panier est vide.';
   }
+  productTotalQuantity();
 }
-
 
 // Function to update the product quantity
 function updateProductQuantity(event) {
@@ -67,119 +64,135 @@ function updateProductQuantity(event) {
             cart[i].quantity = parseInt(event.target.value);
           }
         }
+        
       }
 
   // Update of localStorage
   localStorage.setItem('kanap_cart', JSON.stringify(cart));
+  productTotalQuantity();
 }
 
+// Function total quantity
+function productTotalQuantity() {
+  const productTotalQuantityElement = document.getElementById('totalQuantity');
+  if (cart.length === 0) {
+    productTotalQuantityElement.innerText = '0';
+  }
+  else {
+    const totalProductsQuantity = cart.reduce((sum, current) => {
+      return sum + current.quantity;
+    },0)
+    productTotalQuantityElement.innerText = totalProductsQuantity; 
+  }
+}
+
+// Function total price
 
 // foreach of cart to get all products data
-cart.forEach((cartProduct) => {
+main();
 
-  // loop to get all products infos in LocalStorages
-  fetch("http://localhost:3000/api/products/" + cartProduct.id)
-  .then(function (res) {
-    if (res.ok) {
-      return res.json();
-    }
-    console.log(res);
-  })
+async function main() {
+for (let c=0; c < cart.length; c++) {
+const cartProduct = cart[c];
 
-  //
-  .then(function(cartProductApi) {
-    console.log(cartProductApi);
+  let foundProduct = apiProducts.find((apiProduct) => apiProduct._id === cartProduct.id);
 
-    // Binding with section id cart__items
-    const cartItems = document.getElementById('cart__items');
-
-    // Creation of the article tag
-    const cartArticle = document.createElement('article');
-    cartArticle.classList.add('cart__item');
-    cartArticle.dataset.id = cartProduct.id;
-    cartArticle.dataset.color = cartProduct.color;
-    cartItems.appendChild(cartArticle);
-
-    // Creation of the cart__item__img div tag
-    const cartDivImg = document.createElement('div');
-    cartDivImg.classList.add('cart__item__img');
-    cartArticle.appendChild(cartDivImg);
-
-    // Creation of the img tag
-    const cartImg = document.createElement('img');
-    cartImg.src = cartProductApi.imageUrl;
-    cartImg.alt = cartProductApi.altTxt;
-    cartDivImg.appendChild(cartImg);
-
-    // Creation of the cart__item__content div tag
-    const cartDivContent = document.createElement('div');
-    cartDivContent.classList.add('cart__item__content');
-    cartArticle.appendChild(cartDivContent);
-
-    // Creation of the cart__item__content__description div tag
-    const cartDivContentDescription = document.createElement('div');
-    cartDivContentDescription.classList.add('car__item__content__description');
-    cartDivContent.appendChild(cartDivContentDescription);
-
-    // Creation of the h2 tag
-    const cartDescriptionName = document.createElement('h2');
-    cartDescriptionName.innerHTML = cartProductApi.name;
-    cartDivContentDescription.appendChild(cartDescriptionName);
+  if (foundProduct === undefined) {
     
-    // Creation of the P-color tag
-    const cartDescriptionColor = document.createElement('p');
-    cartDescriptionColor.innerHTML = cartProduct.color;
-    cartDivContentDescription.appendChild(cartDescriptionColor);
+    const res = await fetch("http://localhost:3000/api/products/" + cartProduct.id);
+    foundProduct = await res.json();
+    
+      apiProducts.push(foundProduct);
+  }
+    // Binding with section id cart__items
+      const cartItems = document.getElementById('cart__items');
 
-    // Creation of the P-price tag
-    const cartDescriptionPrice = document.createElement('p');
-    cartDescriptionPrice.innerHTML = `${cartProductApi.price} €`;
-    cartDivContentDescription.appendChild(cartDescriptionPrice);
+      // Creation of the article tag
+      const cartArticle = document.createElement('article');
+      cartArticle.classList.add('cart__item');
+      cartArticle.dataset.id = cartProduct.id;
+      cartArticle.dataset.color = cartProduct.color;
+      cartItems.appendChild(cartArticle);
 
-    // Creation of the cart__item__content__settings div tag
-    const cartDivContentSettings = document.createElement('div');
-    cartDivContentSettings.classList.add('cart__item__content__settings');
-    cartDivContent.appendChild(cartDivContentSettings);
+      // Creation of the cart__item__img div tag
+      const cartDivImg = document.createElement('div');
+      cartDivImg.classList.add('cart__item__img');
+      cartArticle.appendChild(cartDivImg);
 
-    // Creation of the cart__item__content__settings__quantity div tag
-    const cartSettingsQuantityP = document.createElement('div');
-    cartSettingsQuantityP.classList.add('cart__item__content__settings__quantity');
-    cartDivContentSettings.appendChild(cartSettingsQuantityP);
+      // Creation of the img tag
+      const cartImg = document.createElement('img');
+      cartImg.src = foundProduct.imageUrl;
+      cartImg.alt = foundProduct.altTxt;
+      cartDivImg.appendChild(cartImg);
 
-    // Creation of the P-quantity tag
-    const cartSettingsQuantityValue = document.createElement('p');
-    cartSettingsQuantityValue.innerHTML = `Qté : `;
-    cartSettingsQuantityP.appendChild(cartSettingsQuantityValue);
+      // Creation of the cart__item__content div tag
+      const cartDivContent = document.createElement('div');
+      cartDivContent.classList.add('cart__item__content');
+      cartArticle.appendChild(cartDivContent);
 
-    // Creation of the Input tag and its attributes
-    const cartInputQuantity = document.createElement('input');
-    cartInputQuantity.type = 'number';
-    cartInputQuantity.classList.add('itemQuantity');
-    cartInputQuantity.name = 'itemQuantity';
-    cartInputQuantity.min = 1;
-    cartInputQuantity.max = 100;
-    cartInputQuantity.value = cartProduct.quantity;
-    cartSettingsQuantityP.appendChild(cartInputQuantity);
+      // Creation of the cart__item__content__description div tag
+      const cartDivContentDescription = document.createElement('div');
+      cartDivContentDescription.classList.add('car__item__content__description');
+      cartDivContent.appendChild(cartDivContentDescription);
 
-    // Creation of the delete button div tag
-    const cartSettingsDelete = document.createElement('div');
-    cartSettingsDelete.classList.add('cart__item__content__settings__delete');
-    cartDivContentSettings.appendChild(cartSettingsDelete);
+      // Creation of the h2 tag
+      const cartDescriptionName = document.createElement('h2');
+      cartDescriptionName.innerHTML = foundProduct.name;
+      cartDivContentDescription.appendChild(cartDescriptionName);
+      
+      // Creation of the P-color tag
+      const cartDescriptionColor = document.createElement('p');
+      cartDescriptionColor.innerHTML = cartProduct.color;
+      cartDivContentDescription.appendChild(cartDescriptionColor);
 
-    // Creation of the P-delete Tag
-    const cartSettingsDeleteP = document.createElement('p');
-    cartSettingsDeleteP.classList.add('deleteItem');
-    cartSettingsDeleteP.innerHTML = 'Supprimer';
-    cartSettingsDelete.appendChild(cartSettingsDeleteP);
+      // Creation of the P-price tag
+      const cartDescriptionPrice = document.createElement('p');
+      cartDescriptionPrice.innerHTML = `${foundProduct.price} €`;
+      cartDivContentDescription.appendChild(cartDescriptionPrice);
 
-    // Listener for Delete button
-    cartSettingsDeleteP.addEventListener('click', productDelete);
+      // Creation of the cart__item__content__settings div tag
+      const cartDivContentSettings = document.createElement('div');
+      cartDivContentSettings.classList.add('cart__item__content__settings');
+      cartDivContent.appendChild(cartDivContentSettings);
 
-    // Listner for update Quantity
-    cartInputQuantity.addEventListener('change', updateProductQuantity);
-  })
+      // Creation of the cart__item__content__settings__quantity div tag
+      const cartSettingsQuantityP = document.createElement('div');
+      cartSettingsQuantityP.classList.add('cart__item__content__settings__quantity');
+      cartDivContentSettings.appendChild(cartSettingsQuantityP);
 
+      // Creation of the P-quantity tag
+      const cartSettingsQuantityValue = document.createElement('p');
+      cartSettingsQuantityValue.innerHTML = `Qté : `;
+      cartSettingsQuantityP.appendChild(cartSettingsQuantityValue);
+
+      // Creation of the Input tag and its attributes
+      const cartInputQuantity = document.createElement('input');
+      cartInputQuantity.type = 'number';
+      cartInputQuantity.classList.add('itemQuantity');
+      cartInputQuantity.name = 'itemQuantity';
+      cartInputQuantity.min = 1;
+      cartInputQuantity.max = 100;
+      cartInputQuantity.value = cartProduct.quantity;
+      cartSettingsQuantityP.appendChild(cartInputQuantity);
+
+      // Creation of the delete button div tag
+      const cartSettingsDelete = document.createElement('div');
+      cartSettingsDelete.classList.add('cart__item__content__settings__delete');
+      cartDivContentSettings.appendChild(cartSettingsDelete);
+
+      // Creation of the P-delete Tag
+      const cartSettingsDeleteP = document.createElement('p');
+      cartSettingsDeleteP.classList.add('deleteItem');
+      cartSettingsDeleteP.innerHTML = 'Supprimer';
+      cartSettingsDelete.appendChild(cartSettingsDeleteP);
+
+      // Listener for Delete button
+      cartSettingsDeleteP.addEventListener('click', productDelete);
+
+      // Listner for update Quantity
+      cartInputQuantity.addEventListener('change', updateProductQuantity);
   
-});
-
+}
+productTotalQuantity();
+}
 
