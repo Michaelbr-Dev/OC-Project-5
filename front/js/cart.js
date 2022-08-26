@@ -2,6 +2,12 @@
 const cart = JSON.parse(localStorage.getItem("kanap_cart"));
 console.log(cart);
 
+
+// display 'Votre panier est vide' when cart is empty
+if (cart.length === 0) {
+  document.querySelector('h1').innerText = 'Votre panier est vide.';
+}
+
 //const apiProduct = [];
 
 
@@ -12,7 +18,6 @@ function productDelete(event) {
   const articleElementProduct = event.target.closest('article');
   const deleteId = articleElementProduct.dataset.id;
   const deleteColor = articleElementProduct.dataset.color;
-  //console.log(event.target.closest('article'));
 
   // loop in localStorage to get the index of product to delete
   for (i=0; i < cart.length; i++) {
@@ -29,6 +34,11 @@ function productDelete(event) {
 
   // remove product in HTML 
   articleElementProduct.remove();
+
+  // display 'Votre panier est vide' when cart is empty
+  if (cart.length === 0) {
+  document.querySelector('h1').innerText = 'Votre panier est vide.';
+  }
 }
 
 
