@@ -224,56 +224,31 @@ const isAddressValid = () => regexAddress.test(address.value);
 const isCityValid = () => regexCity.test(city.value);
 const isEmailValid = () => regexEmail.test(email.value);
 
-firstName.addEventListener('keyup', () => {
-  const firstNameError = document.getElementById('firstNameErrorMsg');
-  firstNameError.innerText = !isFirstNameValid() ? 'Merci de préciser un prénom valide.' : '';
-});
+const events = ['keyup', 'change'];
+events.forEach((event) => {
+  firstName.addEventListener(event, () => {
+    const firstNameError = document.getElementById('firstNameErrorMsg');
+    firstNameError.innerText = !isFirstNameValid() ? 'Merci de préciser un prénom valide.' : '';
+  });
 
-firstName.addEventListener('change', () => {
-  const firstNameError = document.getElementById('firstNameErrorMsg');
-  firstNameError.innerText = !isFirstNameValid() ? 'Merci de préciser un prénom valide.' : '';
+  lastName.addEventListener(event, () => {
+    const lastNameError = document.getElementById('lastNameErrorMsg');
+    lastNameError.innerText = !isLastNameValid() ? 'Merci de préciser un nom valide.' : '';
+  });
 
-});
+  address.addEventListener(event, () => {
+    const addressError = document.getElementById('addressErrorMsg');
+    addressError.innerText = !isAddressValid() ? 'Merci de préciser une adresse valide.' : '';
+  });
 
-lastName.addEventListener('keyup', () => {
-  const lastNameError = document.getElementById('lastNameErrorMsg');
-  lastNameError.innerText = !isLastNameValid() ? 'Merci de préciser un nom valide.' : '';
-  
-});
+  city.addEventListener(event, () => {
+    const cityError = document.getElementById('cityErrorMsg')
+    cityError.innerText = !isCityValid() ? 'Merci de préciser une ville valide.' : '';
+  });
 
-lastName.addEventListener('change', () => {
-  const lastNameError = document.getElementById('lastNameErrorMsg');
-  lastNameError.innerText = !isLastNameValid() ? 'Merci de préciser un nom valide.' : '';
-});
-
-address.addEventListener('keyup', () => {
-  const addressError = document.getElementById('addressErrorMsg');
-  addressError.innerText = !isAddressValid() ? 'Merci de préciser une adresse valide.' : '';
-  
-});
-
-address.addEventListener('change', () => {
-  const addressError = document.getElementById('addressErrorMsg');
-  addressError.innerText = !isAddressValid() ? 'Merci de préciser une adresse valide.' : '';
-  
-});
-
-city.addEventListener('keyup', () => {
-  const cityError = document.getElementById('cityErrorMsg')
-  cityError.innerText = !isCityValid() ? 'Merci de préciser une ville valide.' : '';
-});
-
-city.addEventListener('change', () => {
-  const cityError = document.getElementById('cityErrorMsg')
-  cityError.innerText = !isCityValid() ? 'Merci de préciser une ville valide.' : '';
-});
-
-email.addEventListener('keyup', () => {
-  const emailError = document.getElementById('emailErrorMsg')
-  emailError.innerText = !isEmailValid() ? 'Merci de préciser un Email valide.' : '';
-});
-
-email.addEventListener('change', () => {
-  const emailError = document.getElementById('emailErrorMsg')
+  email.addEventListener(event, () => {
+    const emailError = document.getElementById('emailErrorMsg')
     emailError.innerText = !isEmailValid() ? 'Merci de préciser un Email valide.' : '';
-});
+  });
+
+})
