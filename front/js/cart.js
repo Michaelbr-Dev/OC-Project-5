@@ -1,5 +1,5 @@
 // Get the cart in localStorage 
-const cart = JSON.parse(localStorage.getItem("kanap_cart"));
+const cart = JSON.parse(localStorage.getItem("kanap_cart")) || [];
 
 // display 'Votre panier est vide' when cart is empty
 if (cart.length === 0) {
@@ -36,7 +36,8 @@ function productDelete(event) {
   if (cart.length === 0) {
   document.querySelector('h1').innerText = 'Votre panier est vide.';
   }
-  productTotalQuantity();
+  productsTotalQuantity();
+  productsTotalPrice();
 }
 
 // Function to update the product quantity
@@ -64,29 +65,33 @@ function updateProductQuantity(event) {
             cart[i].quantity = parseInt(event.target.value);
           }
         }
-        
+      
       }
 
   // Update of localStorage
   localStorage.setItem('kanap_cart', JSON.stringify(cart));
-  productTotalQuantity();
+  productsTotalQuantity();
+  productsTotalPrice();
 }
 
 // Function total quantity
-function productTotalQuantity() {
-  const productTotalQuantityElement = document.getElementById('totalQuantity');
-  if (cart.length === 0) {
-    productTotalQuantityElement.innerText = '0';
-  }
-  else {
-    const totalProductsQuantity = cart.reduce((sum, current) => {
-      return sum + current.quantity;
-    },0)
-    productTotalQuantityElement.innerText = totalProductsQuantity; 
-  }
+function productsTotalQuantity() {
+  const productsTotalQuantityElement = document.getElementById('totalQuantity');
+  const productsTotalQuantity = cart.reduce((sum, current) => sum + current.quantity, 0);
+  productsTotalQuantityElement.innerText = productsTotalQuantity;
 }
 
 // Function total price
+function productsTotalPrice() {
+  const productsTotalPriceElement = document.getElementById('totalPrice');
+  const productsTotalPrice = cart.reduce((sum, current) => {
+    const quantity = current.quantity;
+    const cachedProduct = apiProducts.find((apiProduct) => apiProduct._id === current.id);
+    const unitPrice = cachedProduct.price
+    return sum + (unitPrice * quantity);
+  }, 0)
+  productsTotalPriceElement.innerText = productsTotalPrice;
+}
 
 // foreach of cart to get all products data
 main();
@@ -193,6 +198,82 @@ const cartProduct = cart[c];
       cartInputQuantity.addEventListener('change', updateProductQuantity);
   
 }
-productTotalQuantity();
+productsTotalQuantity();
+productsTotalPrice();
 }
 
+// Regex vars
+// First name, Last name
+const regexInfos = /^[a-záàâäãåçéèêëíìîïñóòôöõúùûüýÿæœ' \-]{2,}$/i;
+// Postal Address
+const regexAddress = /^[a-záàâäãåçéèêëíìîïñóòôöõúùûüýÿæœ0-9.' \-]{5,}$/i;
+// City
+const regexCity = /^[a-záàâäãåçéèêëíìîïñóòôöõúùûüýÿæœ' .\-]{2,}$/i;
+// Mail
+const regexEmail = /^[a-zA-Z0-9-_.]{2,63}@[a-z0-9_.\-]{2,63}(?:\.[a-z]{2,4}){1,3}$/;
+
+const firstName = document.getElementById('firstName');
+const lastName  = document.getElementById('lastName');
+const address   = document.getElementById('address');
+const city      = document.getElementById('city');
+const email     = document.getElementById('email');
+
+const isFirstNameValid = () => regexInfos.test(firstName.value);
+const isLastNameValid = () => regexInfos.test(lastName.value);
+const isAddressValid = () => regexAddress.test(address.value);
+const isCityValid = () => regexCity.test(city.value);
+const isEmailValid = () => regexEmail.test(email.value);
+
+firstName.addEventListener('keyup', () => {
+  const firstNameError = document.getElementById('firstNameErrorMsg');
+  firstNameError.innerText = !isFirstNameValid() ? 'Merci de préciser un prénom valide.' : '';
+});
+
+firstName.addEventListener('change', () => {
+  const firstNameError = document.getElementById('firstNameErrorMsg');
+  firstNameError.innerText = !isFirstNameValid() ? 'Merci de préciser un prénom valide.' : '';
+
+});
+
+lastName.addEventListener('keyup', () => {
+  const lastNameError = document.getElementById('lastNameErrorMsg');
+  lastNameError.innerText = !isLastNameValid() ? 'Merci de préciser un nom valide.' : '';
+  
+});
+
+lastName.addEventListener('change', () => {
+  const lastNameError = document.getElementById('lastNameErrorMsg');
+  lastNameError.innerText = !isLastNameValid() ? 'Merci de préciser un nom valide.' : '';
+});
+
+address.addEventListener('keyup', () => {
+  const addressError = document.getElementById('addressErrorMsg');
+  addressError.innerText = !isAddressValid() ? 'Merci de préciser une adresse valide.' : '';
+  
+});
+
+address.addEventListener('change', () => {
+  const addressError = document.getElementById('addressErrorMsg');
+  addressError.innerText = !isAddressValid() ? 'Merci de préciser une adresse valide.' : '';
+  
+});
+
+city.addEventListener('keyup', () => {
+  const cityError = document.getElementById('cityErrorMsg')
+  cityError.innerText = !isCityValid() ? 'Merci de préciser une ville valide.' : '';
+});
+
+city.addEventListener('change', () => {
+  const cityError = document.getElementById('cityErrorMsg')
+  cityError.innerText = !isCityValid() ? 'Merci de préciser une ville valide.' : '';
+});
+
+email.addEventListener('keyup', () => {
+  const emailError = document.getElementById('emailErrorMsg')
+  emailError.innerText = !isEmailValid() ? 'Merci de préciser un Email valide.' : '';
+});
+
+email.addEventListener('change', () => {
+  const emailError = document.getElementById('emailErrorMsg')
+    emailError.innerText = !isEmailValid() ? 'Merci de préciser un Email valide.' : '';
+});
