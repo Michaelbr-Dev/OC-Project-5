@@ -252,3 +252,42 @@ events.forEach((event) => {
   });
 
 })
+
+const form = document.querySelector('.cart__order__form');
+
+form.addEventListener('submit', function(e) {
+  e.preventDefault()
+  const baseUrl = 'http://localhost:3000/api/products/order';
+  const customer = {
+    firstName: firstName.value,
+    lastName: lastName.value,
+    address: address.value,
+    city: city.value,
+    email: email.value
+  };
+  
+  const cartProducts = [];
+  if (cart.length === 0) {
+    alert('Votre panier est vide.')
+  }
+  else {
+  for (i=0; i<cart.length; i++) {
+    cartProducts.push(cart[i].id);
+  }}
+  
+  const order = {contact:customer, products:cartProducts};
+
+  fetch(baseUrl, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json'
+    },
+    body: JSON.stringify(order)
+  })
+  .then((res) => {return res.json()})
+  .then((data) => {
+  window.location.href =`./confirmation.html?orderId=${data.orderId}`;
+  localStorage.clear();
+  })
+})
