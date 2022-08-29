@@ -273,7 +273,7 @@ form.addEventListener('submit', function(e) {
   else {
   for (i=0; i<cart.length; i++) {
     cartProducts.push(cart[i].id);
-  }}
+  }
   
   const order = {contact:customer, products:cartProducts};
 
@@ -290,4 +290,4 @@ form.addEventListener('submit', function(e) {
   window.location.href =`./confirmation.html?orderId=${data.orderId}`;
   localStorage.clear();
   })
-})
+}})
