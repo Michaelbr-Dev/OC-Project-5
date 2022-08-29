@@ -8,9 +8,13 @@ if (cart.length === 0) {
 
 const apiProducts = [];
 
+/*
+@
+@
+@
+*/
 // Function Delete product in cart
 function productDelete(event) {
-
   // Get ID and Color from button delete event
   const articleElementProduct = event.target.closest('article');
   const deleteId = articleElementProduct.dataset.id;
