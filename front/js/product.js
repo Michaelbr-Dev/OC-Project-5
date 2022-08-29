@@ -1,6 +1,13 @@
 // Get id from url
 const urlIdParam = new URL(window.location.href);
 const productId = urlIdParam.searchParams.get('id');
+const regexProductId = /^[a-f0-9]{32}$/i;
+
+if(regexProductId === false) {
+  alert('Le produit n\'existe pas')
+}
+else{
+}
 
 // Set product url
 const productUrl = 'http://localhost:3000/api/products/' + productId;
@@ -121,4 +128,10 @@ fetch(productUrl)
 
     })
 
+  })
+
+  .catch((error) => {
+    console.log(error);
+    alert('Le produit n\'existe pas');
+    document.location.href='./index.html';
   })
