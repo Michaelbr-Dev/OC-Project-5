@@ -1,17 +1,14 @@
 // Connection to the API
-fetch("http://localhost:3000/api/products")
-  .then(function (res) {
-    if (res.ok) {
-      return res.json();
-    }
-  })
+fetch('http://localhost:3000/api/products')
+  .then((res) => res.json())
 
   // Looping on (res) to list products
-  .then(function (value) {
+  .then((value) => {
     value.forEach((products) => {
       // Create items link
       const linkElem = document.createElement('a');
-      linkElem.href = "./product.html?id=" + products._id;
+      // eslint-disable-next-line no-underscore-dangle
+      linkElem.href = `./product.html?id=${products._id}`;
 
       // Create items article
       const artElem = document.createElement('article');
@@ -36,7 +33,7 @@ fetch("http://localhost:3000/api/products")
       artElem.appendChild(productDescElem);
 
       // Link to items sections
-      const items = document.getElementById("items");
+      const items = document.getElementById('items');
 
       // insert link item
       items.appendChild(linkElem);
