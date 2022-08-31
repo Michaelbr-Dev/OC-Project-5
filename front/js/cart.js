@@ -1,4 +1,8 @@
-/* eslint-disable no-alert, no-console */
+/**
+ * @file Manage all cart products and form.
+ * @author Michael Briquet <contact@michaelbr-dev.fr>
+ */
+
 // Get the cart in localStorage
 const cart = JSON.parse(localStorage.getItem('kanap_cart')) || [];
 
@@ -9,14 +13,24 @@ if (cart.length === 0) {
 
 const apiProducts = [];
 
-// Function total quantity
+/**
+ * @function
+ * @description Calculate total products quantity in cart.
+ *
+ * @returns {void}
+ */
 function productsTotalQuantity() {
   const productsTotalQuantityElement = document.getElementById('totalQuantity');
   const productsTotalQuantityValue = cart.reduce((sum, current) => sum + current.quantity, 0);
   productsTotalQuantityElement.innerText = productsTotalQuantityValue;
 }
 
-// Function total price
+/**
+ * @function
+ * @description Calculate total products price in cart.
+ *
+ * @returns {void}
+ */
 function productsTotalPrice() {
   const productsTotalPriceElement = document.getElementById('totalPrice');
   const productsTotalPriceValue = cart.reduce((sum, current) => {
@@ -24,12 +38,19 @@ function productsTotalPrice() {
     // eslint-disable-next-line no-underscore-dangle
     const cachedProduct = apiProducts.find((apiProduct) => apiProduct._id === current.id);
     const unitPrice = cachedProduct.price;
-    return sum + (unitPrice * quantity);
+    return sum + unitPrice * quantity;
   }, 0);
   productsTotalPriceElement.innerText = productsTotalPriceValue;
 }
 
-// Function Delete product in cart
+/**
+ * @function
+ * @description Delete product in cart.
+ *
+ * @param   {MouseEvent} event - Click event.
+ *
+ * @returns {void}
+ */
 function productDelete(event) {
   // Get ID and Color from button delete event
   const articleElementProduct = event.target.closest('article');
@@ -59,7 +80,14 @@ function productDelete(event) {
   productsTotalPrice();
 }
 
-// Function to update the product quantity
+/**
+ * @function
+ * @description Function to calculate total products quantity in cart.
+ *
+ * @param   {MouseEvent} event - Click event.
+ *
+ * @returns {void}
+ */
 function updateProductQuantity(event) {
   // Get ID and Color input update event
   const articleElementProduct = event.target.closest('article');
@@ -70,7 +98,7 @@ function updateProductQuantity(event) {
   if (parseInt(event.target.value, 10) > 100) {
     alert('Vous ne pouvez pas commander plus de 100 articles.');
   } else if (parseInt(event.target.value, 10) < 1) {
-    alert('Veuillez séléctionner un nombre d\'articles entre 1 et 100.');
+    alert("Veuillez séléctionner un nombre d'articles entre 1 et 100.");
   } else {
     // loop in localStorage to get the index of product to update
     for (let i = 0; i < cart.length; i += 1) {
@@ -87,6 +115,12 @@ function updateProductQuantity(event) {
   productsTotalPrice();
 }
 
+/**
+ * @function
+ * @description Display products details in cart.
+ *
+ * @returns {void}
+ */
 async function main() {
   for (let c = 0; c < cart.length; c += 1) {
     const cartProduct = cart[c];
@@ -215,10 +249,44 @@ const address = document.getElementById('address');
 const city = document.getElementById('city');
 const email = document.getElementById('email');
 
+/**
+ * @function
+ * @description Check first name input in form.
+ *
+ * @returns {boolean} - Input validity.
+ */
 const isFirstNameValid = () => regexInfos.test(firstName.value);
+
+/**
+ * @function
+ * @description Check last name input in form.
+ *
+ * @returns {boolean} - Input validity.
+ */
 const isLastNameValid = () => regexInfos.test(lastName.value);
+
+/**
+ * @function
+ * @description Check address input in form.
+ *
+ * @returns {boolean} - Input validity.
+ */
 const isAddressValid = () => regexAddress.test(address.value);
+
+/**
+ * @function
+ * @description Check city input in form.
+ *
+ * @returns {boolean} - Input validity.
+ */
 const isCityValid = () => regexCity.test(city.value);
+
+/**
+ * @function
+ * @description Check mail input in form.
+ *
+ * @returns {boolean} - Input validity.
+ */
 const isEmailValid = () => regexEmail.test(email.value);
 
 const events = ['keyup', 'change'];

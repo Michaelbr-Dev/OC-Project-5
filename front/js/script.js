@@ -1,3 +1,8 @@
+/**
+ * @file Get all products in API to display them in the index.html page.
+ * @author Michael Briquet <contact@michaelbr-dev.fr>
+ */
+
 // Connection to the API
 fetch('http://localhost:3000/api/products')
   .then((res) => res.json())

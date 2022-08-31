@@ -1,11 +1,15 @@
-/* eslint-disable no-alert, no-console */
+/**
+ * @file Fetch products details and display them in the product.html page.
+ * @author Michael Briquet <contact@michaelbr-dev.fr>
+ */
+
 // Get id from url
 const urlIdParam = new URL(window.location.href);
 const productId = urlIdParam.searchParams.get('id');
 const regexProductId = /^[a-f0-9]{32}$/i;
 
 if (regexProductId === false) {
-  alert('Le produit n\'existe pas');
+  alert("Le produit n'existe pas");
 }
 
 // Set product url
@@ -54,7 +58,6 @@ fetch(productUrl)
         quantity: parseInt(document.getElementById('quantity').value, 10),
         id: productId,
       };
-      console.log(productValues);
 
       // Get the cart in localStorage
       // Check if kanap_cart exist
@@ -71,18 +74,19 @@ fetch(productUrl)
       } else if (productValues.quantity > 100) {
         alert('Vous ne pouvez pas commander plus de 100 articles.');
       } else if (productValues.quantity < 1) {
-        alert('Veuillez séléctionner un nombre d\'articles entre 1 et 100.');
+        alert("Veuillez séléctionner un nombre d'articles entre 1 et 100.");
       } else {
         // Check if cart exist
         if (cart.length > 0) {
           // search for id and color to check if there is already the same product in localStorage
-          const getProducts = cart.find(({ id, color }) => id === productValues.id
-          && color === productValues.color);
+          const getProducts = cart.find(
+            ({ id, color }) => id === productValues.id && color === productValues.color,
+          );
 
           // if exist, we increment the quantity
           if (getProducts) {
-            const setNewQuantity = parseInt(getProducts.quantity, 10)
-            + parseInt(productValues.quantity, 10);
+            const setNewQuantity =
+              parseInt(getProducts.quantity, 10) + parseInt(productValues.quantity, 10);
 
             if (setNewQuantity > 100) {
               return alert('Vous ne pouvez dépasser la quantité de 100 Produits.');
@@ -102,7 +106,6 @@ fetch(productUrl)
         cart.push(productValues);
         localStorage.setItem('kanap_cart', JSON.stringify(cart));
         alert('Votre article a bien été ajouté au panier.');
-        console.log(localStorage);
       }
       return true;
     });
@@ -110,6 +113,6 @@ fetch(productUrl)
 
   .catch((error) => {
     console.log(error);
-    alert('Le produit n\'existe pas');
+    alert("Le produit n'existe pas");
     document.location.href = './index.html';
   });
