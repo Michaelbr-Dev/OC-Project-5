@@ -1,3 +1,4 @@
+/* eslint-disable no-alert, no-console */
 // Get the cart in localStorage
 const cart = JSON.parse(localStorage.getItem('kanap_cart')) || [];
 
@@ -8,11 +9,26 @@ if (cart.length === 0) {
 
 const apiProducts = [];
 
-/*
-@
-@
-@
-*/
+// Function total quantity
+function productsTotalQuantity() {
+  const productsTotalQuantityElement = document.getElementById('totalQuantity');
+  const productsTotalQuantityValue = cart.reduce((sum, current) => sum + current.quantity, 0);
+  productsTotalQuantityElement.innerText = productsTotalQuantityValue;
+}
+
+// Function total price
+function productsTotalPrice() {
+  const productsTotalPriceElement = document.getElementById('totalPrice');
+  const productsTotalPriceValue = cart.reduce((sum, current) => {
+    const { quantity } = current;
+    // eslint-disable-next-line no-underscore-dangle
+    const cachedProduct = apiProducts.find((apiProduct) => apiProduct._id === current.id);
+    const unitPrice = cachedProduct.price;
+    return sum + (unitPrice * quantity);
+  }, 0);
+  productsTotalPriceElement.innerText = productsTotalPriceValue;
+}
+
 // Function Delete product in cart
 function productDelete(event) {
   // Get ID and Color from button delete event
@@ -71,29 +87,6 @@ function updateProductQuantity(event) {
   productsTotalPrice();
 }
 
-// Function total quantity
-function productsTotalQuantity() {
-  const productsTotalQuantityElement = document.getElementById('totalQuantity');
-  const productsTotalQuantity = cart.reduce((sum, current) => sum + current.quantity, 0);
-  productsTotalQuantityElement.innerText = productsTotalQuantity;
-}
-
-// Function total price
-function productsTotalPrice() {
-  const productsTotalPriceElement = document.getElementById('totalPrice');
-  const productsTotalPrice = cart.reduce((sum, current) => {
-    const quantity = current.quantity;
-    // eslint-disable-next-line no-underscore-dangle
-    const cachedProduct = apiProducts.find((apiProduct) => apiProduct._id === current.id);
-    const unitPrice = cachedProduct.price;
-    return sum + (unitPrice * quantity);
-  }, 0);
-  productsTotalPriceElement.innerText = productsTotalPrice;
-}
-
-// foreach of cart to get all products data
-main();
-
 async function main() {
   for (let c = 0; c < cart.length; c += 1) {
     const cartProduct = cart[c];
@@ -102,7 +95,9 @@ async function main() {
     let foundProduct = apiProducts.find((apiProduct) => apiProduct._id === cartProduct.id);
 
     if (foundProduct === undefined) {
+      // eslint-disable-next-line no-await-in-loop
       const res = await fetch(`http://localhost:3000/api/products/${cartProduct.id}`);
+      // eslint-disable-next-line no-await-in-loop
       foundProduct = await res.json();
 
       apiProducts.push(foundProduct);
@@ -200,6 +195,9 @@ async function main() {
   productsTotalQuantity();
   productsTotalPrice();
 }
+
+// foreach of cart to get all products data
+main();
 
 // Regex vars
 // First name, Last name
