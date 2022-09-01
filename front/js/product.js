@@ -67,7 +67,6 @@ fetch(productUrl)
       } else {
         cart = [];
       }
-
       // Check if a color is selected
       if (productValues.color === '') return alert('Veuillez choisir une couleur !');
       // Check if quantity is correctly set

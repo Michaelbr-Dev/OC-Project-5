@@ -9,33 +9,19 @@ fetch('http://localhost:3000/api/products')
 
   // Looping on (res) to list products
   .then((value) => {
-    value.forEach((products) => {
+    value.forEach((product) => {
       // Create items link
       const linkElem = document.createElement('a');
       // eslint-disable-next-line no-underscore-dangle
-      linkElem.href = `./product.html?id=${products._id}`;
+      linkElem.href = `./product.html?id=${product._id}`;
 
-      // Create items article
-      const artElem = document.createElement('article');
-      linkElem.appendChild(artElem);
-
-      // Create item article image
-      const imgElem = document.createElement('img');
-      imgElem.src = products.imageUrl;
-      imgElem.alt = products.altTxt;
-      artElem.appendChild(imgElem);
-
-      // Create H3 product name
-      const productNameElem = document.createElement('h3');
-      productNameElem.classList.add = 'products.name';
-      productNameElem.innerText = products.name;
-      artElem.appendChild(productNameElem);
-
-      // Create product description
-      const productDescElem = document.createElement('p');
-      productDescElem.classList.add = 'productDescription';
-      productDescElem.innerText = products.description;
-      artElem.appendChild(productDescElem);
+      linkElem.innerHTML = /* html */ `
+        <article>
+          <img src="${product.imageUrl}" alt="${product.altTxt}">
+          <h3 class="productName">${product.name}</h3>
+          <p class="productDescription">${product.description}</p>
+        </article>
+      `;
 
       // Link to items sections
       const items = document.getElementById('items');

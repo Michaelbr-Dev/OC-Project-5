@@ -108,13 +108,12 @@ function updateProductQuantity(event) {
       cart[i].quantity = parseInt(event.target.value, 10);
     }
   }
+  // Update of localStorage
+  localStorage.setItem('kanap_cart', JSON.stringify(cart));
+  productsTotalQuantity();
+  productsTotalPrice();
   return true;
 }
-
-// Update of localStorage
-localStorage.setItem('kanap_cart', JSON.stringify(cart));
-productsTotalQuantity();
-productsTotalPrice();
 
 /**
  * @function
@@ -146,84 +145,44 @@ async function main() {
     cartArticle.classList.add('cart__item');
     cartArticle.dataset.id = cartProduct.id;
     cartArticle.dataset.color = cartProduct.color;
+
+    cartArticle.innerHTML = /* HTML */ `
+      <div class="cart__item__img">
+        <img src="${foundProduct.imageUrl}" alt="${foundProduct.altTxt}" />
+      </div>
+      <div class="cart__item__content">
+        <div class="cart__item__content__description">
+          <h2>${foundProduct.name}</h2>
+          <p>${cartProduct.color}</p>
+          <p>${foundProduct.price} €</p>
+        </div>
+        <div class="cart__item__content__settings">
+          <div class="cart__item__content__settings__quantity">
+            <p>Qté :</p>
+            <input
+              type="number"
+              class="itemQuantity"
+              name="itemQuantity"
+              min="1"
+              max="100"
+              value="${cartProduct.quantity}"
+            />
+          </div>
+          <div class="cart__item__content__settings__delete">
+            <p class="deleteItem">Supprimer</p>
+          </div>
+        </div>
+      </div>
+    `;
+
     cartItems.appendChild(cartArticle);
 
-    // Creation of the cart__item__img div tag
-    const cartDivImg = document.createElement('div');
-    cartDivImg.classList.add('cart__item__img');
-    cartArticle.appendChild(cartDivImg);
-
-    // Creation of the img tag
-    const cartImg = document.createElement('img');
-    cartImg.src = foundProduct.imageUrl;
-    cartImg.alt = foundProduct.altTxt;
-    cartDivImg.appendChild(cartImg);
-
-    // Creation of the cart__item__content div tag
-    const cartDivContent = document.createElement('div');
-    cartDivContent.classList.add('cart__item__content');
-    cartArticle.appendChild(cartDivContent);
-
-    // Creation of the cart__item__content__description div tag
-    const cartDivContentDescription = document.createElement('div');
-    cartDivContentDescription.classList.add('car__item__content__description');
-    cartDivContent.appendChild(cartDivContentDescription);
-
-    // Creation of the h2 tag
-    const cartDescriptionName = document.createElement('h2');
-    cartDescriptionName.innerHTML = foundProduct.name;
-    cartDivContentDescription.appendChild(cartDescriptionName);
-
-    // Creation of the P-color tag
-    const cartDescriptionColor = document.createElement('p');
-    cartDescriptionColor.innerHTML = cartProduct.color;
-    cartDivContentDescription.appendChild(cartDescriptionColor);
-
-    // Creation of the P-price tag
-    const cartDescriptionPrice = document.createElement('p');
-    cartDescriptionPrice.innerHTML = `${foundProduct.price} €`;
-    cartDivContentDescription.appendChild(cartDescriptionPrice);
-
-    // Creation of the cart__item__content__settings div tag
-    const cartDivContentSettings = document.createElement('div');
-    cartDivContentSettings.classList.add('cart__item__content__settings');
-    cartDivContent.appendChild(cartDivContentSettings);
-
-    // Creation of the cart__item__content__settings__quantity div tag
-    const cartSettingsQuantityP = document.createElement('div');
-    cartSettingsQuantityP.classList.add('cart__item__content__settings__quantity');
-    cartDivContentSettings.appendChild(cartSettingsQuantityP);
-
-    // Creation of the P-quantity tag
-    const cartSettingsQuantityValue = document.createElement('p');
-    cartSettingsQuantityValue.innerHTML = 'Qté : ';
-    cartSettingsQuantityP.appendChild(cartSettingsQuantityValue);
-
-    // Creation of the Input tag and its attributes
-    const cartInputQuantity = document.createElement('input');
-    cartInputQuantity.type = 'number';
-    cartInputQuantity.classList.add('itemQuantity');
-    cartInputQuantity.name = 'itemQuantity';
-    cartInputQuantity.min = 1;
-    cartInputQuantity.max = 100;
-    cartInputQuantity.value = cartProduct.quantity;
-    cartSettingsQuantityP.appendChild(cartInputQuantity);
-
-    // Creation of the delete button div tag
-    const cartSettingsDelete = document.createElement('div');
-    cartSettingsDelete.classList.add('cart__item__content__settings__delete');
-    cartDivContentSettings.appendChild(cartSettingsDelete);
-
-    // Creation of the P-delete Tag
-    const cartSettingsDeleteP = document.createElement('p');
-    cartSettingsDeleteP.classList.add('deleteItem');
-    cartSettingsDeleteP.innerHTML = 'Supprimer';
-    cartSettingsDelete.appendChild(cartSettingsDeleteP);
-
     // Listener for Delete button
+    const cartSettingsDeleteP = cartArticle.querySelector('p.deleteItem');
     cartSettingsDeleteP.addEventListener('click', productDelete);
 
     // Listner for update Quantity
+    const cartInputQuantity = cartArticle.querySelector('input.itemQuantity');
     cartInputQuantity.addEventListener('change', updateProductQuantity);
   }
 
@@ -290,6 +249,15 @@ const isCityValid = () => regexCity.test(city.value);
  */
 const isEmailValid = () => regexEmail.test(email.value);
 
+/**
+ * @function
+ * @description Check all form input return true before post.
+ *
+ * @returns { boolean } - Form validity.
+ */
+const isFormValid = () =>
+  isFirstNameValid() && isLastNameValid() && isAddressValid() && isCityValid() && isEmailValid();
+
 const events = ['keyup', 'change'];
 events.forEach((event) => {
   firstName.addEventListener(event, () => {
@@ -322,6 +290,10 @@ const form = document.querySelector('.cart__order__form');
 
 form.addEventListener('submit', (e) => {
   e.preventDefault();
+  if (!isFormValid()) {
+    return alert('Veuillez remplir correctement le formulaire');
+  }
+
   const baseUrl = 'http://localhost:3000/api/products/order';
   const customer = {
     firstName: firstName.value,
