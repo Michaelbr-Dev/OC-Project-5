@@ -92,7 +92,7 @@
             
             <nav>
                 
-                    <h2><a href="index.html">Documentation</a></h2><div class="category"><h3>Global</h3><ul><li><a href="global.html#isAddressValid">isAddressValid</a></li><li><a href="global.html#isCityValid">isCityValid</a></li><li><a href="global.html#isEmailValid">isEmailValid</a></li><li><a href="global.html#isFirstNameValid">isFirstNameValid</a></li><li><a href="global.html#isLastNameValid">isLastNameValid</a></li><li><a href="global.html#main">main</a></li><li><a href="global.html#productDelete">productDelete</a></li><li><a href="global.html#productsTotalPrice">productsTotalPrice</a></li><li><a href="global.html#productsTotalQuantity">productsTotalQuantity</a></li><li><a href="global.html#updateProductQuantity">updateProductQuantity</a></li></ul></div>
+                    <h2><a href="index.html">Documentation</a></h2><div class="category"><h3>Global</h3><ul><li><a href="global.html#isAddressValid">isAddressValid</a></li><li><a href="global.html#isCityValid">isCityValid</a></li><li><a href="global.html#isEmailValid">isEmailValid</a></li><li><a href="global.html#isFirstNameValid">isFirstNameValid</a></li><li><a href="global.html#isFormValid">isFormValid</a></li><li><a href="global.html#isLastNameValid">isLastNameValid</a></li><li><a href="global.html#main">main</a></li><li><a href="global.html#productDelete">productDelete</a></li><li><a href="global.html#productsTotalPrice">productsTotalPrice</a></li><li><a href="global.html#productsTotalQuantity">productsTotalQuantity</a></li><li><a href="global.html#updateProductQuantity">updateProductQuantity</a></li></ul></div>
                 
             </nav>
         </div>
@@ -207,23 +207,23 @@ function updateProductQuantity(event) {
 
   // Check if quantity is between 1 and 100
   if (parseInt(event.target.value, 10) > 100) {
-    alert('Vous ne pouvez pas commander plus de 100 articles.');
-  } else if (parseInt(event.target.value, 10) &lt; 1) {
-    alert("Veuillez séléctionner un nombre d'articles entre 1 et 100.");
-  } else {
-    // loop in localStorage to get the index of product to update
-    for (let i = 0; i &lt; cart.length; i += 1) {
-      if (deleteId === cart[i].id &amp;&amp; deleteColor === cart[i].color) {
-        // Delete Product in localStorage array
-        cart[i].quantity = parseInt(event.target.value, 10);
-      }
+    return alert('Vous ne pouvez pas commander plus de 100 articles.');
+  }
+  if (parseInt(event.target.value, 10) &lt; 1) {
+    return alert("Veuillez séléctionner un nombre d'articles entre 1 et 100.");
+  }
+  // loop in localStorage to get the index of product to update
+  for (let i = 0; i &lt; cart.length; i += 1) {
+    if (deleteId === cart[i].id &amp;&amp; deleteColor === cart[i].color) {
+      // Delete Product in localStorage array
+      cart[i].quantity = parseInt(event.target.value, 10);
     }
   }
-
   // Update of localStorage
   localStorage.setItem('kanap_cart', JSON.stringify(cart));
   productsTotalQuantity();
   productsTotalPrice();
+  return true;
 }
 
 /**
@@ -256,84 +256,44 @@ async function main() {
     cartArticle.classList.add('cart__item');
     cartArticle.dataset.id = cartProduct.id;
     cartArticle.dataset.color = cartProduct.color;
+
+    cartArticle.innerHTML = /* HTML */ `
+      &lt;div class="cart__item__img">
+        &lt;img src="${foundProduct.imageUrl}" alt="${foundProduct.altTxt}" />
+      &lt;/div>
+      &lt;div class="cart__item__content">
+        &lt;div class="cart__item__content__description">
+          &lt;h2>${foundProduct.name}&lt;/h2>
+          &lt;p>${cartProduct.color}&lt;/p>
+          &lt;p>${foundProduct.price} €&lt;/p>
+        &lt;/div>
+        &lt;div class="cart__item__content__settings">
+          &lt;div class="cart__item__content__settings__quantity">
+            &lt;p>Qté :&lt;/p>
+            &lt;input
+              type="number"
+              class="itemQuantity"
+              name="itemQuantity"
+              min="1"
+              max="100"
+              value="${cartProduct.quantity}"
+            />
+          &lt;/div>
+          &lt;div class="cart__item__content__settings__delete">
+            &lt;p class="deleteItem">Supprimer&lt;/p>
+          &lt;/div>
+        &lt;/div>
+      &lt;/div>
+    `;
+
     cartItems.appendChild(cartArticle);
 
-    // Creation of the cart__item__img div tag
-    const cartDivImg = document.createElement('div');
-    cartDivImg.classList.add('cart__item__img');
-    cartArticle.appendChild(cartDivImg);
-
-    // Creation of the img tag
-    const cartImg = document.createElement('img');
-    cartImg.src = foundProduct.imageUrl;
-    cartImg.alt = foundProduct.altTxt;
-    cartDivImg.appendChild(cartImg);
-
-    // Creation of the cart__item__content div tag
-    const cartDivContent = document.createElement('div');
-    cartDivContent.classList.add('cart__item__content');
-    cartArticle.appendChild(cartDivContent);
-
-    // Creation of the cart__item__content__description div tag
-    const cartDivContentDescription = document.createElement('div');
-    cartDivContentDescription.classList.add('car__item__content__description');
-    cartDivContent.appendChild(cartDivContentDescription);
-
-    // Creation of the h2 tag
-    const cartDescriptionName = document.createElement('h2');
-    cartDescriptionName.innerHTML = foundProduct.name;
-    cartDivContentDescription.appendChild(cartDescriptionName);
-
-    // Creation of the P-color tag
-    const cartDescriptionColor = document.createElement('p');
-    cartDescriptionColor.innerHTML = cartProduct.color;
-    cartDivContentDescription.appendChild(cartDescriptionColor);
-
-    // Creation of the P-price tag
-    const cartDescriptionPrice = document.createElement('p');
-    cartDescriptionPrice.innerHTML = `${foundProduct.price} €`;
-    cartDivContentDescription.appendChild(cartDescriptionPrice);
-
-    // Creation of the cart__item__content__settings div tag
-    const cartDivContentSettings = document.createElement('div');
-    cartDivContentSettings.classList.add('cart__item__content__settings');
-    cartDivContent.appendChild(cartDivContentSettings);
-
-    // Creation of the cart__item__content__settings__quantity div tag
-    const cartSettingsQuantityP = document.createElement('div');
-    cartSettingsQuantityP.classList.add('cart__item__content__settings__quantity');
-    cartDivContentSettings.appendChild(cartSettingsQuantityP);
-
-    // Creation of the P-quantity tag
-    const cartSettingsQuantityValue = document.createElement('p');
-    cartSettingsQuantityValue.innerHTML = 'Qté : ';
-    cartSettingsQuantityP.appendChild(cartSettingsQuantityValue);
-
-    // Creation of the Input tag and its attributes
-    const cartInputQuantity = document.createElement('input');
-    cartInputQuantity.type = 'number';
-    cartInputQuantity.classList.add('itemQuantity');
-    cartInputQuantity.name = 'itemQuantity';
-    cartInputQuantity.min = 1;
-    cartInputQuantity.max = 100;
-    cartInputQuantity.value = cartProduct.quantity;
-    cartSettingsQuantityP.appendChild(cartInputQuantity);
-
-    // Creation of the delete button div tag
-    const cartSettingsDelete = document.createElement('div');
-    cartSettingsDelete.classList.add('cart__item__content__settings__delete');
-    cartDivContentSettings.appendChild(cartSettingsDelete);
-
-    // Creation of the P-delete Tag
-    const cartSettingsDeleteP = document.createElement('p');
-    cartSettingsDeleteP.classList.add('deleteItem');
-    cartSettingsDeleteP.innerHTML = 'Supprimer';
-    cartSettingsDelete.appendChild(cartSettingsDeleteP);
-
     // Listener for Delete button
+    const cartSettingsDeleteP = cartArticle.querySelector('p.deleteItem');
     cartSettingsDeleteP.addEventListener('click', productDelete);
 
     // Listner for update Quantity
+    const cartInputQuantity = cartArticle.querySelector('input.itemQuantity');
     cartInputQuantity.addEventListener('change', updateProductQuantity);
   }
 
@@ -400,6 +360,15 @@ const isCityValid = () => regexCity.test(city.value);
  */
 const isEmailValid = () => regexEmail.test(email.value);
 
+/**
+ * @function
+ * @description Check all form input return true before post.
+ *
+ * @returns { boolean } - Form validity.
+ */
+const isFormValid = () =>
+  isFirstNameValid() &amp;&amp; isLastNameValid() &amp;&amp; isAddressValid() &amp;&amp; isCityValid() &amp;&amp; isEmailValid();
+
 const events = ['keyup', 'change'];
 events.forEach((event) => {
   firstName.addEventListener(event, () => {
@@ -432,6 +401,10 @@ const form = document.querySelector('.cart__order__form');
 
 form.addEventListener('submit', (e) => {
   e.preventDefault();
+  if (!isFormValid()) {
+    return alert('Veuillez remplir correctement le formulaire');
+  }
+
   const baseUrl = 'http://localhost:3000/api/products/order';
   const customer = {
     firstName: firstName.value,
@@ -443,28 +416,28 @@ form.addEventListener('submit', (e) => {
 
   const cartProducts = [];
   if (cart.length === 0) {
-    alert('Votre panier est vide.');
-  } else {
-    for (let i = 0; i &lt; cart.length; i += 1) {
-      cartProducts.push(cart[i].id);
-    }
-
-    const order = { contact: customer, products: cartProducts };
-
-    fetch(baseUrl, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Accept: 'application/json',
-      },
-      body: JSON.stringify(order),
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        window.location.href = `./confirmation.html?orderId=${data.orderId}`;
-        localStorage.clear();
-      });
+    return alert('Votre panier est vide.');
   }
+  for (let i = 0; i &lt; cart.length; i += 1) {
+    cartProducts.push(cart[i].id);
+  }
+
+  const order = { contact: customer, products: cartProducts };
+
+  fetch(baseUrl, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Accept: 'application/json',
+    },
+    body: JSON.stringify(order),
+  })
+    .then((res) => res.json())
+    .then((data) => {
+      window.location.href = `./confirmation.html?orderId=${data.orderId}`;
+      localStorage.clear();
+    });
+  return true;
 });
 </code></pre>
         </article>

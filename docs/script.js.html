@@ -92,7 +92,7 @@
             
             <nav>
                 
-                    <h2><a href="index.html">Documentation</a></h2><div class="category"><h3>Global</h3><ul><li><a href="global.html#isAddressValid">isAddressValid</a></li><li><a href="global.html#isCityValid">isCityValid</a></li><li><a href="global.html#isEmailValid">isEmailValid</a></li><li><a href="global.html#isFirstNameValid">isFirstNameValid</a></li><li><a href="global.html#isLastNameValid">isLastNameValid</a></li><li><a href="global.html#main">main</a></li><li><a href="global.html#productDelete">productDelete</a></li><li><a href="global.html#productsTotalPrice">productsTotalPrice</a></li><li><a href="global.html#productsTotalQuantity">productsTotalQuantity</a></li><li><a href="global.html#updateProductQuantity">updateProductQuantity</a></li></ul></div>
+                    <h2><a href="index.html">Documentation</a></h2><div class="category"><h3>Global</h3><ul><li><a href="global.html#isAddressValid">isAddressValid</a></li><li><a href="global.html#isCityValid">isCityValid</a></li><li><a href="global.html#isEmailValid">isEmailValid</a></li><li><a href="global.html#isFirstNameValid">isFirstNameValid</a></li><li><a href="global.html#isFormValid">isFormValid</a></li><li><a href="global.html#isLastNameValid">isLastNameValid</a></li><li><a href="global.html#main">main</a></li><li><a href="global.html#productDelete">productDelete</a></li><li><a href="global.html#productsTotalPrice">productsTotalPrice</a></li><li><a href="global.html#productsTotalQuantity">productsTotalQuantity</a></li><li><a href="global.html#updateProductQuantity">updateProductQuantity</a></li></ul></div>
                 
             </nav>
         </div>
@@ -120,33 +120,19 @@ fetch('http://localhost:3000/api/products')
 
   // Looping on (res) to list products
   .then((value) => {
-    value.forEach((products) => {
+    value.forEach((product) => {
       // Create items link
       const linkElem = document.createElement('a');
       // eslint-disable-next-line no-underscore-dangle
-      linkElem.href = `./product.html?id=${products._id}`;
+      linkElem.href = `./product.html?id=${product._id}`;
 
-      // Create items article
-      const artElem = document.createElement('article');
-      linkElem.appendChild(artElem);
-
-      // Create item article image
-      const imgElem = document.createElement('img');
-      imgElem.src = products.imageUrl;
-      imgElem.alt = products.altTxt;
-      artElem.appendChild(imgElem);
-
-      // Create H3 product name
-      const productNameElem = document.createElement('h3');
-      productNameElem.classList.add = 'products.name';
-      productNameElem.innerText = products.name;
-      artElem.appendChild(productNameElem);
-
-      // Create product description
-      const productDescElem = document.createElement('p');
-      productDescElem.classList.add = 'productDescription';
-      productDescElem.innerText = products.description;
-      artElem.appendChild(productDescElem);
+      linkElem.innerHTML = /* html */ `
+        &lt;article>
+          &lt;img src="${product.imageUrl}" alt="${product.altTxt}">
+          &lt;h3 class="productName">${product.name}&lt;/h3>
+          &lt;p class="productDescription">${product.description}&lt;/p>
+        &lt;/article>
+      `;
 
       // Link to items sections
       const items = document.getElementById('items');
