@@ -69,45 +69,44 @@ fetch(productUrl)
       }
 
       // Check if a color is selected
-      if (productValues.color === '') {
-        alert('Veuillez choisir une couleur !');
-      } else if (productValues.quantity > 100) {
-        alert('Vous ne pouvez pas commander plus de 100 articles.');
-      } else if (productValues.quantity < 1) {
-        alert("Veuillez séléctionner un nombre d'articles entre 1 et 100.");
-      } else {
-        // Check if cart exist
-        if (cart.length > 0) {
-          // search for id and color to check if there is already the same product in localStorage
-          const getProducts = cart.find(
-            ({ id, color }) => id === productValues.id && color === productValues.color,
-          );
+      if (productValues.color === '') return alert('Veuillez choisir une couleur !');
+      // Check if quantity is correctly set
+      if (productValues.quantity > 100)
+        return alert('Vous ne pouvez pas commander plus de 100 articles.');
+      if (productValues.quantity < 1)
+        return alert("Veuillez séléctionner un nombre d'articles entre 1 et 100.");
 
-          // if exist, we increment the quantity
-          if (getProducts) {
-            const setNewQuantity =
-              parseInt(getProducts.quantity, 10) + parseInt(productValues.quantity, 10);
-
-            if (setNewQuantity > 100) {
-              return alert('Vous ne pouvez dépasser la quantité de 100 Produits.');
-            }
-            getProducts.quantity = setNewQuantity;
-
-            // Send datas in localStorage
-            localStorage.setItem('kanap_cart', JSON.stringify(cart));
-            return alert('Votre panier a bien été mis à jour.');
-          }
-          // We add the new products in localStorage
-          cart.push(productValues);
-          localStorage.setItem('kanap_cart', JSON.stringify(cart));
-          return alert('Votre article a bien été ajouté au panier.');
-        }
+      // Check if cart exist
+      if (cart.length === 0) {
         // Add the new products in localStorage
         cart.push(productValues);
         localStorage.setItem('kanap_cart', JSON.stringify(cart));
-        alert('Votre article a bien été ajouté au panier.');
+        return alert('Votre article a bien été ajouté au panier.');
       }
-      return true;
+
+      // search for id and color to check if there is already the same product in localStorage
+      const getProducts = cart.find(
+        ({ id, color }) => id === productValues.id && color === productValues.color,
+      );
+
+      if (!getProducts) {
+        // We add the new products in localStorage
+        cart.push(productValues);
+        localStorage.setItem('kanap_cart', JSON.stringify(cart));
+        return alert('Votre article a bien été ajouté au panier.');
+      }
+
+      // if exist, we increment the quantity
+      const setNewQuantity =
+        parseInt(getProducts.quantity, 10) + parseInt(productValues.quantity, 10);
+
+      if (setNewQuantity > 100)
+        return alert('Vous ne pouvez dépasser la quantité de 100 Produits.');
+
+      getProducts.quantity = setNewQuantity;
+      // Send datas in localStorage
+      localStorage.setItem('kanap_cart', JSON.stringify(cart));
+      return alert('Votre panier a bien été mis à jour.');
     });
   })
 

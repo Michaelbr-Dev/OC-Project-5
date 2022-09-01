@@ -96,24 +96,25 @@ function updateProductQuantity(event) {
 
   // Check if quantity is between 1 and 100
   if (parseInt(event.target.value, 10) > 100) {
-    alert('Vous ne pouvez pas commander plus de 100 articles.');
-  } else if (parseInt(event.target.value, 10) < 1) {
-    alert("Veuillez séléctionner un nombre d'articles entre 1 et 100.");
-  } else {
-    // loop in localStorage to get the index of product to update
-    for (let i = 0; i < cart.length; i += 1) {
-      if (deleteId === cart[i].id && deleteColor === cart[i].color) {
-        // Delete Product in localStorage array
-        cart[i].quantity = parseInt(event.target.value, 10);
-      }
+    return alert('Vous ne pouvez pas commander plus de 100 articles.');
+  }
+  if (parseInt(event.target.value, 10) < 1) {
+    return alert("Veuillez séléctionner un nombre d'articles entre 1 et 100.");
+  }
+  // loop in localStorage to get the index of product to update
+  for (let i = 0; i < cart.length; i += 1) {
+    if (deleteId === cart[i].id && deleteColor === cart[i].color) {
+      // Delete Product in localStorage array
+      cart[i].quantity = parseInt(event.target.value, 10);
     }
   }
-
-  // Update of localStorage
-  localStorage.setItem('kanap_cart', JSON.stringify(cart));
-  productsTotalQuantity();
-  productsTotalPrice();
+  return true;
 }
+
+// Update of localStorage
+localStorage.setItem('kanap_cart', JSON.stringify(cart));
+productsTotalQuantity();
+productsTotalPrice();
 
 /**
  * @function
@@ -332,26 +333,26 @@ form.addEventListener('submit', (e) => {
 
   const cartProducts = [];
   if (cart.length === 0) {
-    alert('Votre panier est vide.');
-  } else {
-    for (let i = 0; i < cart.length; i += 1) {
-      cartProducts.push(cart[i].id);
-    }
-
-    const order = { contact: customer, products: cartProducts };
-
-    fetch(baseUrl, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Accept: 'application/json',
-      },
-      body: JSON.stringify(order),
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        window.location.href = `./confirmation.html?orderId=${data.orderId}`;
-        localStorage.clear();
-      });
+    return alert('Votre panier est vide.');
   }
+  for (let i = 0; i < cart.length; i += 1) {
+    cartProducts.push(cart[i].id);
+  }
+
+  const order = { contact: customer, products: cartProducts };
+
+  fetch(baseUrl, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Accept: 'application/json',
+    },
+    body: JSON.stringify(order),
+  })
+    .then((res) => res.json())
+    .then((data) => {
+      window.location.href = `./confirmation.html?orderId=${data.orderId}`;
+      localStorage.clear();
+    });
+  return true;
 });
