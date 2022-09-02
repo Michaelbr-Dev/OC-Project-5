@@ -30,6 +30,10 @@
         {
           "label": "View App",
           "href": "https://michaelbr-dev.github.io/OC-Project-5/front/html/"
+        },
+        {
+          "label": "Test plan",
+          "href": "https://believed-mailbox-9c2.notion.site/Plan-de-test-Projet-5-be993ba3101c4a31a62823e20aad97ca"
         }
       ]
     }

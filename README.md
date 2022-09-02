@@ -51,3 +51,4 @@ console when the server starts, e.g. `Listening on port 3001`.
 
 - Front End: [Kanap](https://michaelbr-dev.github.io/OC-Project-5/front/html/index.html)
 - Doc: [Kanap code documentation](https://michaelbr-dev.github.io/OC-Project-5/docs/)
+- Test Plan: [Notion Document](https://believed-mailbox-9c2.notion.site/Plan-de-test-Projet-5-be993ba3101c4a31a62823e20aad97ca)
